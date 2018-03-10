@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Table from './components/table.js';
+import {Grid, Col, Row} from 'react-bootstrap';
 
 class App extends Component {
+  headers = ["First Name", "Last Name", "Emp Id"];
+  data= [
+    { first_name: "Bhushan", last_name: "Mer", emp_id: 456, id:25},
+    { first_name: "Bhushan", last_name: "Mer", emp_id: 456, id: 85}
+  ];
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
+      <Table headers = {this.headers} data={this.data} enableRowSelection = {true}/>
     );
   }
 }

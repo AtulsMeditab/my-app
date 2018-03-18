@@ -18,11 +18,6 @@ class RTable extends Component {
         this.state ={
             selectedRow: []
         };
-        this.onclickRowSelection = this.onclickRowSelection.bind(this);
-    }
-
-    onclickRowSelection() {
-        
     }
 
     headerToAliasConversion() {
@@ -64,6 +59,12 @@ class TableHeader extends Component{
 class TableBody extends Component {
     constructor(props) {
         super(props);
+        this.onclickRowSelection = this.onclickRowSelection.bind(this);
+    }
+
+    onclickRowSelection(event) {
+        event.preventDefault();
+        console.log(event.target);        
     }
     
     render() {
@@ -78,7 +79,7 @@ class TableBody extends Component {
             );
         }
         else{
-            strBody = this.props.data.map((arrVal, intIndex)=><TableRow alias={this.props.alias} index ={intIndex} key={arrVal.id || intIndex} data={arrVal} tbody = {1} />);
+            strBody = this.props.data.map((arrVal, intIndex)=><TableRow onClick={this.onclickRowSelection} alias={this.props.alias} index ={intIndex} key={arrVal.id || intIndex} data={arrVal} tbody = {1} />);
         }
         return(
             <tbody>

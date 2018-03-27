@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import RForm from './components/form/form';
 import {Grid, Col, Row} from 'react-bootstrap';
+import rule from './validations/rules';
 
 class App extends Component {
   headers = ["First Name", "Last Name", "Emp Id"];
@@ -15,6 +16,9 @@ class App extends Component {
       label: "Name",
       value: "Bhushan",
     };
+    var objRules = new rule;
+    console.log('I am in rule object..');
+    console.log(objRules.validationRules.length('bhushanm01', 10));
 
     this.formParams = {
       rows: [
@@ -40,7 +44,10 @@ class App extends Component {
               label: "Last Name",
               value: "",
               gridClass: "col-lg-4 col-md-4",
-              strId: "lname"
+              strId: "lname",
+              validate: {
+                email:{}
+              }
               
             }
           ],

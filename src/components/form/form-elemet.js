@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Checkbox, ControlLabel, FormControl, FormGroup, HelpBlock, Radio } from 'react-bootstrap';
 // import Validation from './../validations/validation';
 import Bootstrap from './../bootstrapGrid.js';
+import rules from './../../validations/rules';
 /**
  * Various JS events
  * Sr.      Event           Description
@@ -46,6 +47,7 @@ class RFormElement extends Component {
          * 10.      placeholder         label
          * 11.      elementType         Type of HTML Elemtn. Default is input.
          * 12.      isSrOnly            It's used to Enable and disable a control label. Default is false.
+         * 13.      objValidationRules  It's contains the rule for which field should be validated and required parameters for the same.
          */
 
         this.elementType = this.props.elementType || (this.objParams && this.objParams.elementType)?this.objParams.elementType: "input";
@@ -62,6 +64,7 @@ class RFormElement extends Component {
         this.isSrOnly = this.props.isSrOnly || (this.objParams && this.objParams.isSrOnly)?this.objParams.isSrOnly: false;
         this.isInline = this.props.isInline || (this.objParams && this.objParams.isInline)?this.objParams.isInline: false;
         this.isDisabled = this.props.isDisabled || (this.objParams && this.objParams.isDisabled)?this.objParams.isDisabled: false;
+        this.objValidationRules = this.props.validate || (this.objParams && this.objParams.validate)?this.objParams.validate: false;
 
         /**
          * Bind Events
@@ -71,7 +74,8 @@ class RFormElement extends Component {
         this.handleChange = this.handleChange.bind(this);
         
         this.state = {
-            value: this.value
+            value: this.value,
+            isFocused: false
         }
         // this.handleChange = this.handleChange.bind(this);
         // this.handleClick = this.handleClick.bind(this);
@@ -83,9 +87,31 @@ class RFormElement extends Component {
 
     /* Update a value of element whenever input is changed. */
     handleChange(event) {
-        this.setState({ value: event.target.value });
+        this.setState({ 
+            value: event.target.value,
+            isFocused: true
+        });
     }
-    
+
+    getValidationState() {
+        console.log(this.state.isFocused);
+        if(this.objValidationRules && this.state.isFocused){
+            console.log(this.objValidationRules);
+            var objValidation = new rules;
+            var arrRules = Object.keys(this.objValidationRules);
+            var intRuleCount = arrRules.length;
+
+            for(var intCount = 0; intCount < intRuleCount; intCount++){
+                var strRule = arrRules[intCount];
+                var objRulePara = this.objValidationRules[strRule];
+                console.log(objValidation.validationRules[strRule](this.state.value, objRulePara));
+                if(!objValidation.validationRules[strRule](this.state.value, objRulePara))
+                    return 'error';
+            }
+            return 'success';
+        }
+    }
+
     render() {
         switch(this.elementType) {
             case "radio":
@@ -102,10 +128,10 @@ class RFormElement extends Component {
                 break;
         }
         return (
-            <FormGroup className={this.gridClass} controlId={this.strId}>
+            <FormGroup validationState = {this.getValidationState()} className={this.gridClass} controlId={this.strId}>
                 <ControlLabel srOnly={this.isSrOnly}>{this.label}</ControlLabel>
                 <FormControl componentClass={this.elementType} type={this.type} value={this.state.value} placeholder={this.label} onChange={this.handleChange }/>
-                <FormControl.Feedback />
+                {/* <FormControl.Feedback /> */}
                 <HelpBlock>{this.helperText}</HelpBlock>
             </FormGroup>
         );
